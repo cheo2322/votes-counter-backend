@@ -15,6 +15,6 @@ public interface CandidateMapper {
   @Mapping(source = "name", target = "name")
   Candidate requestToCandidate(CandidateRequest candidateRequest);
 
-  @Mapping(source = "name", target = "name")
+  @Mapping(source = "candidateId", target = "id")
   CandidateDto candidateToResponse(Candidate candidate);
 }
