@@ -11,7 +11,8 @@ import lombok.Setter;
 public class CandidateRequest {
 
   private String name;
-  private String list;
+  private String lastName;
+  private int list;
   private String city;
   private String province;
   private Position position;

@@ -6,9 +6,12 @@ import com.elections.counter.service.CounterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +23,17 @@ public class CounterController {
   @Autowired
   CounterService counterService;
 
-  @PostMapping(value = "/candidate")
+  @PostMapping(path = "/candidate")
   @ResponseStatus(value = HttpStatus.CREATED)
   @ResponseBody
   public CandidateResponse createCandidate(@RequestBody CandidateRequest candidateRequest) {
     return counterService.createCandidate(candidateRequest);
+  }
+
+  @PutMapping(path = "/candidate/{id}/votes/add")
+  @ResponseStatus(value = HttpStatus.ACCEPTED)
+  public long addVotes(@PathVariable String id, @RequestParam long votes) {
+    return counterService.addVotes(id, votes);
   }
 
   @GetMapping("/candidate")
