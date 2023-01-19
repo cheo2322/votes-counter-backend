@@ -1,8 +1,10 @@
 package com.elections.counter.controller;
 
 import com.elections.counter.dto.request.CandidateRequest;
+import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
 import com.elections.counter.service.CounterService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +39,8 @@ public class CounterController {
   }
 
   @GetMapping("/candidate")
-  public void getCandidates() {
-
+  public List<CandidateDto> getCandidates() {
+    return counterService.getAllCandidates();
   }
 
   @GetMapping("/candidate/:id")

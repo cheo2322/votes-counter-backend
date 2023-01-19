@@ -2,9 +2,12 @@ package com.elections.counter.service;
 
 import com.elections.counter.document.Candidate;
 import com.elections.counter.dto.request.CandidateRequest;
+import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
 import com.elections.counter.mapper.CandidateMapper;
 import com.elections.counter.repository.CandidateRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,12 @@ public class CounterService {
           return candidate.getVotes();
         })
         .orElseThrow(() -> new RuntimeException("Not found."));
+  }
+
+  public List<CandidateDto> getAllCandidates() {
+    return candidateRepository.findAll()
+        .stream().map(CandidateMapper.INSTANCE::candidateToResponse)
+        .collect(Collectors.toList());
   }
 
   private void setCandidateCode(Candidate candidate) {
