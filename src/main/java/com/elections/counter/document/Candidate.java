@@ -40,9 +40,9 @@ public class Candidate {
   }
 
   public enum Parish {
-    SAN_MIGUEL_DE_URCUQUI("San Miguel de Urcuqu\\u00ed"),
+    SAN_MIGUEL_DE_URCUQUI("San Miguel de Urcuquí"),
     PABLO_ARENAS("Pablo Arenas"),
-    CAHUASQUI("Cahuasqu\\u00ed"),
+    CAHUASQUI("Cahuasquí"),
     BUENOS_AIRES("Buenos Aires"),
     SAN_BLAS("San Blass"),
     TUMBABIRO("Tumbabiro");
