@@ -46,6 +46,6 @@ public class CounterService {
 
   private void setCandidateCode(Candidate candidate) {
     candidate.setCode(String.format("%s_%s_%s_%d", candidate.getLastName(),
-        candidate.getPosition().name(), candidate.getCity(), candidate.getList()));
+        candidate.getPosition().name(), candidate.getParish().name(), candidate.getList()));
   }
 }

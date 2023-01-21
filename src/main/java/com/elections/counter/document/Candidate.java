@@ -19,13 +19,21 @@ public class Candidate {
   private String name;
   private String lastName;
   private int list;
-  private String city;
-  private String province;
   private long votes;
+  private Parish parish;
   private Position position;
   public enum Position {
     ALCALDE,
     PREFECTO,
     CONCEJAL,
+  }
+
+  public enum Parish {
+    SAN_MIGUEL_DE_URCUQUI,
+    PABLO_ARENAS,
+    CAHUASQUI,
+    BUENOS_AIRES,
+    SAN_BLAS,
+    TUMBABIRO
   }
 }
