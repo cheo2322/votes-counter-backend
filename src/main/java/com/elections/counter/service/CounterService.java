@@ -28,7 +28,9 @@ public class CounterService {
 
     candidateRepository.save(candidate);
 
-    return CandidateResponse.builder().name(candidateRequest.getName()).build();
+    return CandidateResponse.builder()
+        .name(String.format("%s %s", candidateRequest.getName(), candidate.getLastName()))
+        .build();
   }
 
   public long addVotes(String id, VotesDto newVotes) {
@@ -38,8 +40,12 @@ public class CounterService {
             .filter(votes1 -> votes1.getParish().equals(newVotes.getParish()))
             .findFirst()
             .map(votes -> {
-              votes.setVotesAmount(votes.getVotesAmount() + newVotes.getVotesAmount());
+              long newVotesAmount = newVotes.getVotesAmount();
+              votes.setVotesAmount(votes.getVotesAmount() + newVotesAmount);
               votesRepository.save(votes);
+
+              candidate.setTotalVotes(candidate.getTotalVotes() + newVotesAmount);
+              candidateRepository.save(candidate);
 
               return votes.getVotesAmount();
             })
