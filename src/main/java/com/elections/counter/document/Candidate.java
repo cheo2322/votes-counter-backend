@@ -22,8 +22,8 @@ public class Candidate {
   private String lastName;
   private int list;
   private long votes;
-  private Parish parish;
   private Position position;
+
   public enum Position {
     ALCALDE("Alcalde"),
     PREFECTO("Prefecto"),
@@ -31,25 +31,6 @@ public class Candidate {
 
     private final String label;
     Position(String label){
-      this.label = label;
-    }
-
-    public String getLabel() {
-      return label;
-    }
-  }
-
-  public enum Parish {
-    SAN_MIGUEL_DE_URCUQUI("San Miguel de Urcuquí"),
-    PABLO_ARENAS("Pablo Arenas"),
-    CAHUASQUI("Cahuasquí"),
-    BUENOS_AIRES("Buenos Aires"),
-    SAN_BLAS("San Blass"),
-    TUMBABIRO("Tumbabiro");
-
-    private final String label;
-
-    Parish(String label) {
       this.label = label;
     }
 

@@ -12,7 +12,6 @@ public class CandidateDto {
   private String name;
   private String lastName;
   private int list;
-  private String parish;
   private long votes;
   private String position;
 

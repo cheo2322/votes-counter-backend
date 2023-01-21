@@ -17,6 +17,5 @@ public interface CandidateMapper {
 
   @Mapping(source = "candidateId", target = "id")
   @Mapping(source = "position.label", target = "position")
-  @Mapping(source = "parish.label", target = "parish")
   CandidateDto candidateToResponse(Candidate candidate);
 }
