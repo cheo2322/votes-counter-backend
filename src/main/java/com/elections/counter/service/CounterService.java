@@ -4,8 +4,10 @@ import com.elections.counter.document.Candidate;
 import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
+import com.elections.counter.dto.response.VotesDto;
 import com.elections.counter.mapper.CandidateMapper;
 import com.elections.counter.repository.CandidateRepository;
+import com.elections.counter.repository.VotesRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class CounterService {
   @Autowired
   CandidateRepository candidateRepository;
 
+  @Autowired
+  VotesRepository votesRepository;
+
   public CandidateResponse createCandidate(CandidateRequest candidateRequest) {
     Candidate candidate = CandidateMapper.INSTANCE.requestToCandidate(candidateRequest);
     setCandidateCode(candidate);
@@ -26,16 +31,21 @@ public class CounterService {
     return CandidateResponse.builder().name(candidateRequest.getName()).build();
   }
 
-  public long addVotes(String id, long votes) {
+  public long addVotes(String id, VotesDto newVotes) {
     return candidateRepository.findById(id)
-        .map(candidate -> {
-          long updatedVotes = candidate.getVotes() + votes;
-          candidate.setVotes(updatedVotes);
+        .map(candidate -> candidate.getVotes()
+            .stream()
+            .filter(votes1 -> votes1.getParish().equals(newVotes.getParish()))
+            .findFirst()
+            .map(votes -> {
+              votes.setVotesAmount(votes.getVotesAmount() + newVotes.getVotesAmount());
+              votesRepository.save(votes);
 
-          candidateRepository.save(candidate);
-          return candidate.getVotes();
-        })
-        .orElseThrow(() -> new RuntimeException("Not found."));
+              return votes.getVotesAmount();
+            })
+            .orElseThrow(() -> new RuntimeException("No votes found!"))
+        )
+        .orElseThrow(() -> new RuntimeException("No candidate found!"));
   }
 
   public List<CandidateDto> getAllCandidates() {

@@ -3,6 +3,7 @@ package com.elections.counter.controller;
 import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
+import com.elections.counter.dto.response.VotesDto;
 import com.elections.counter.service.CounterService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,8 +38,8 @@ public class CounterController {
 
   @PatchMapping(path = "/candidate/{id}/votes/add")
   @ResponseStatus(value = HttpStatus.ACCEPTED)
-  public long addVotes(@PathVariable String id, @RequestParam long votes) {
-    log.info(String.format("PATCH addVotes [id: %s, votes: %d]", id, votes));
+  public long addVotes(@PathVariable String id, @RequestBody VotesDto votes) {
+    log.info(String.format("PATCH addVotes [id: %s, votes: %s]", id, votes));
 
     return counterService.addVotes(id, votes);
   }

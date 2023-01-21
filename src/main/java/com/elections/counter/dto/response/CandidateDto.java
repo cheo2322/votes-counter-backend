@@ -1,6 +1,6 @@
 package com.elections.counter.dto.response;
 
-import com.elections.counter.document.Candidate.Position;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ public class CandidateDto {
   private String name;
   private String lastName;
   private int list;
-  private long votes;
+  private List<VotesDto> votes;
+  private long totalVotes;
   private String position;
-
 }

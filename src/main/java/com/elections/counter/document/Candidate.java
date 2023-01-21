@@ -1,5 +1,6 @@
 package com.elections.counter.document;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,7 +22,7 @@ public class Candidate {
   private String name;
   private String lastName;
   private int list;
-  private long votes;
+  private List<Votes> votes;
   private Position position;
 
   public enum Position {
