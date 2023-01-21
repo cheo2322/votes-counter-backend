@@ -12,9 +12,8 @@ public class CandidateDto {
   private String name;
   private String lastName;
   private int list;
-  private String city;
-  private String province;
+  private String parish;
   private long votes;
-  private Position position;
+  private String position;
 
 }
