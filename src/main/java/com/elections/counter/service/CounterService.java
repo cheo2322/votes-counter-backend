@@ -43,6 +43,7 @@ public class CounterService {
         .orElseThrow(() -> new RuntimeException("No candidate found!"));
   }
 
+  // TODO: optimize the implementation
   private VotesAddedResponse addVotes(VotesDto newVotesDto, Candidate candidate) {
     Votes newVotes = CandidateMapper.INSTANCE.dtoToVotes(newVotesDto);
 
@@ -52,23 +53,33 @@ public class CounterService {
           .filter(votes -> votes.getParish().equals(newVotes.getParish()))
           .findFirst()
           .map(votes -> {
-            long existentVotes = votes.getVotesAmount();
+            Votes currentVotes = votesRepository.findById(votes.getVoteId())
+                .orElseThrow(() -> new RuntimeException("Fail!"));
+
+            long existentVotes = currentVotes.getVotesAmount();
             long newVotesAmount = newVotes.getVotesAmount();
 
             long totalVotes = existentVotes + newVotesAmount;
-            votes.setVotesAmount(totalVotes);
+            currentVotes.setVotesAmount(totalVotes);
 
-            votesRepository.save(votes);
+            candidate.getVotes()
+                .stream()
+                .filter(votes1 -> votes1.getVoteId().equals(currentVotes.getVoteId()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No value"))
+                .setVotesAmount(totalVotes);
+
+            votesRepository.save(currentVotes);
             candidateRepository.save(candidate);
 
             return VotesAddedResponse.builder()
                 .votesAdded(newVotesAmount)
                 .totalVotesOnParish(totalVotes)
                 .totalVotes(candidate.getVotes().stream().mapToLong(Votes::getVotesAmount).sum())
+                .parish(newVotes.getParish())
                 .build();
           })
-          .orElse(addVotesWithNoParishVotes(candidate, newVotes));
-
+          .orElseGet(() -> addVotesWithNoParishVotes(candidate, newVotes));
     } else {
       candidate.setVotes(Collections.singletonList(newVotes));
 
@@ -100,7 +111,15 @@ public class CounterService {
 
   public List<CandidateDto> getAllCandidates() {
     return candidateRepository.findAll()
-        .stream().map(CandidateMapper.INSTANCE::candidateToResponse)
+        .stream()
+        .map(candidate -> {
+          CandidateDto candidateDto = CandidateMapper.INSTANCE.candidateToResponse(candidate);
+          candidateDto.setTotalVotes(
+              candidate.getVotes().stream().mapToLong(Votes::getVotesAmount).sum()
+          );
+
+          return candidateDto;
+        })
         .collect(Collectors.toList());
   }
 
