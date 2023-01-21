@@ -16,7 +16,7 @@ public interface CandidateMapper {
 
   CandidateMapper INSTANCE = Mappers.getMapper(CandidateMapper.class);
 
-  @Mapping(target = "totalVotes", constant = "0L")
+  @Mapping(source = "name", target = "name")
   Candidate requestToCandidate(CandidateRequest candidateRequest);
 
   @Mapping(source = "candidateId", target = "id")
@@ -26,4 +26,7 @@ public interface CandidateMapper {
 
   @Named("votesToVotesDto")
   List<VotesDto> votesToVotesDto(List<Votes> votes);
+
+  @Mapping(source = "parish", target = "parish")
+  Votes dtoToVotes(VotesDto votesDto);
 }

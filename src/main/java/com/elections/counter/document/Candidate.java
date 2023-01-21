@@ -23,7 +23,6 @@ public class Candidate {
   private String lastName;
   private int list;
   private List<Votes> votes;
-  private long totalVotes;
   private Position position;
 
   public enum Position {
