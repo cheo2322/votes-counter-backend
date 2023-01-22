@@ -11,6 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+import org.springframework.util.CollectionUtils;
 
 @Mapper(componentModel = "spring")
 public interface CandidateMapper {
@@ -19,6 +20,10 @@ public interface CandidateMapper {
 
   @Named("votesToVotesDto")
   static List<VotesDto> votesToVotesDto(List<Votes> votes) {
+    if (CollectionUtils.isEmpty(votes)){
+      return null;
+    }
+
     return votes.stream()
         .map(singleVotes ->
           VotesDto.builder()
