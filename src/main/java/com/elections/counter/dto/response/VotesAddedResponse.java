@@ -1,6 +1,6 @@
 package com.elections.counter.dto.response;
 
-import com.elections.counter.document.Votes.Parish;
+import com.elections.counter.document.Parish;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
