@@ -14,4 +14,6 @@ public interface VoteMapper {
   @Mapping(source = "parish.label", target = "parish")
   @Mapping(source = "precinct.label", target = "precinct")
   VoteDto voteToVoteDto(Vote vote);
+
+  Vote dtoToVote(VoteDto voteDto);
 }

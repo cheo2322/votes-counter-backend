@@ -1,6 +1,5 @@
 package com.elections.counter.dto.response;
 
-import com.elections.counter.document.Parish;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +11,9 @@ public class VotesAddedResponse {
 
   private long votesAdded;
   private long totalVotesOnParish;
+  private long totalVotesOnDesk;
   private long totalVotes;
-  private Parish parish;
+  private String parish;
+  private String precinct;
+  private int desk;
 }
