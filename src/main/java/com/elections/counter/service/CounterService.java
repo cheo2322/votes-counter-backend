@@ -114,7 +114,8 @@ public class CounterService {
         .stream()
         .map(candidate -> {
           CandidateDto candidateDto = CandidateMapper.INSTANCE.candidateToResponse(candidate);
-          candidateDto.setTotalVotes(
+          candidateDto.setTotalVotes(CollectionUtils.isEmpty(candidate.getVotes()) ?
+              0 :
               candidate.getVotes().stream().mapToLong(Votes::getVotesAmount).sum()
           );
 
