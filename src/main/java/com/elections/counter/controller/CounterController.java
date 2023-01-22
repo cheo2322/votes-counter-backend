@@ -38,7 +38,7 @@ public class CounterController {
   }
 
   @PatchMapping(path = "/candidate/{id}/votes/add")
-  @ResponseStatus(value = HttpStatus.ACCEPTED)
+  @ResponseStatus(value = HttpStatus.OK)
   @ResponseBody
   public VotesAddedResponse addVotes(@PathVariable String id, @RequestBody VotesDto votes) {
     log.info(String.format("PATCH addVotes [id: %s, votes: %s]", id, votes));

@@ -13,4 +13,5 @@ public class VotesDto {
 
   private long votesAmount;
   private String parish;
+  private String precinct;
 }

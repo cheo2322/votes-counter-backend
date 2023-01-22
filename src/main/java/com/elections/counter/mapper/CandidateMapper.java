@@ -29,6 +29,7 @@ public interface CandidateMapper {
           VotesDto.builder()
           .votesAmount(singleVotes.getVotesAmount())
           .parish(singleVotes.getParish().getLabel())
+          .precinct(singleVotes.getPrecinct().getLabel())
           .build()
         ).collect(Collectors.toList());
   }
