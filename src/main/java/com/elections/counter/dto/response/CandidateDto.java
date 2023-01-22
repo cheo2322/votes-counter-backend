@@ -12,7 +12,7 @@ public class CandidateDto {
   private String name;
   private String lastName;
   private int list;
-  private List<VotesDto> votes;
+  private List<VoteDto> votes;
   private long totalVotes;
   private String position;
 }

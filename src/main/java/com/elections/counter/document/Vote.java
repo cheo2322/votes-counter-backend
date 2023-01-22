@@ -8,12 +8,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 @Getter
 @Setter
-public class Votes {
+public class Vote {
 
   @Id
   private String voteId;
-
+  private String candidateId;
   private long votesAmount;
   private Parish parish;
   private Precinct precinct;
+  private int desk;
 }

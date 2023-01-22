@@ -9,9 +9,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class VotesDto {
+public class VoteDto {
 
   private long votesAmount;
   private String parish;
   private String precinct;
+  private int desk;
 }

@@ -4,7 +4,7 @@ import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
 import com.elections.counter.dto.response.VotesAddedResponse;
-import com.elections.counter.dto.response.VotesDto;
+import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.service.CounterService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class CounterController {
   @PatchMapping(path = "/candidate/{id}/votes/add")
   @ResponseStatus(value = HttpStatus.OK)
   @ResponseBody
-  public VotesAddedResponse addVotes(@PathVariable String id, @RequestBody VotesDto votes) {
+  public VotesAddedResponse addVotes(@PathVariable String id, @RequestBody VoteDto votes) {
     log.info(String.format("PATCH addVotes [id: %s, votes: %s]", id, votes));
 
     return counterService.addVotesToCandidate(id, votes);

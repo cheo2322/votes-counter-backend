@@ -1,6 +1,5 @@
 package com.elections.counter.document;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,27 +15,10 @@ public class Candidate {
 
   @Id
   private String candidateId;
-
   @Indexed(unique = true)
   private String code;
   private String name;
   private String lastName;
   private int list;
-  private List<Votes> votes;
   private Position position;
-
-  public enum Position {
-    ALCALDE("Alcalde"),
-    PREFECTO("Prefecto"),
-    CONCEJAL("Concejal");
-
-    private final String label;
-    Position(String label){
-      this.label = label;
-    }
-
-    public String getLabel() {
-      return label;
-    }
-  }
 }
