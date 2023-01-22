@@ -6,6 +6,7 @@ import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.VotesDto;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -16,6 +17,17 @@ public interface CandidateMapper {
 
   CandidateMapper INSTANCE = Mappers.getMapper(CandidateMapper.class);
 
+  @Named("votesToVotesDto")
+  static List<VotesDto> votesToVotesDto(List<Votes> votes) {
+    return votes.stream()
+        .map(singleVotes ->
+          VotesDto.builder()
+          .votesAmount(singleVotes.getVotesAmount())
+          .parish(singleVotes.getParish().getLabel())
+          .build()
+        ).collect(Collectors.toList());
+  }
+
   @Mapping(source = "name", target = "name")
   Candidate requestToCandidate(CandidateRequest candidateRequest);
 
@@ -23,9 +35,6 @@ public interface CandidateMapper {
   @Mapping(source = "position.label", target = "position")
   @Mapping(source = "votes", target = "votes", qualifiedByName = "votesToVotesDto")
   CandidateDto candidateToResponse(Candidate candidate);
-
-  @Named("votesToVotesDto")
-  List<VotesDto> votesToVotesDto(List<Votes> votes);
 
   @Mapping(source = "parish", target = "parish")
   Votes dtoToVotes(VotesDto votesDto);
