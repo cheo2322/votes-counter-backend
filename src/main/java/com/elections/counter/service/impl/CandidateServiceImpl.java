@@ -12,7 +12,6 @@ import com.elections.counter.mapper.VoteMapper;
 import com.elections.counter.repository.CandidateRepository;
 import com.elections.counter.repository.VoteRepository;
 import com.elections.counter.service.CandidateService;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,19 +51,13 @@ public class CandidateServiceImpl implements CandidateService {
       .stream()
       .map(candidate -> {
         CandidateDto candidateDto = CandidateMapper.INSTANCE.candidateToResponse(candidate);
-        candidateDto.setTotalVotes(0);
-
-        candidateDto.setVotes(voteRepository
+        candidateDto.setTotalVotes(voteRepository
           .findByCandidateId(candidate.getCandidateId())
           .map(voteList -> voteList
             .stream()
-            .map(vote -> {
-              candidateDto.setTotalVotes(candidateDto.getTotalVotes() + vote.getVotesAmount());
-
-              return VoteMapper.INSTANCE.voteToVoteDto(vote);
-            })
-            .collect(Collectors.toList()))
-          .orElse(Collections.emptyList()));
+            .mapToLong(Vote::getVotesAmount)
+            .sum())
+          .orElse(0L));
 
         return candidateDto;
       })
