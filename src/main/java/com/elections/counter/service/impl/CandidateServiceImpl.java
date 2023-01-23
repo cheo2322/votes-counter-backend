@@ -1,4 +1,4 @@
-package com.elections.counter.service;
+package com.elections.counter.service.impl;
 
 import com.elections.counter.document.Candidate;
 import com.elections.counter.document.Vote;
@@ -11,6 +11,7 @@ import com.elections.counter.mapper.CandidateMapper;
 import com.elections.counter.mapper.VoteMapper;
 import com.elections.counter.repository.CandidateRepository;
 import com.elections.counter.repository.VoteRepository;
+import com.elections.counter.service.CandidateService;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CounterService {
+public class CandidateServiceImpl implements CandidateService {
 
   @Autowired
   CandidateRepository candidateRepository;
@@ -26,6 +27,7 @@ public class CounterService {
   @Autowired
   VoteRepository voteRepository;
 
+  @Override
   public CandidateResponse createCandidate(CandidateRequest candidateRequest) {
     Candidate candidate = CandidateMapper.INSTANCE.requestToCandidate(candidateRequest);
     setCandidateCode(candidate);
@@ -33,38 +35,40 @@ public class CounterService {
     candidateRepository.save(candidate);
 
     return CandidateResponse.builder()
-        .name(String.format("%s %s", candidateRequest.getName(), candidate.getLastName()))
-        .build();
+      .name(String.format("%s %s", candidateRequest.getName(), candidate.getLastName()))
+      .build();
   }
 
+  @Override
   public VotesAddedResponse addVotesToCandidate(String id, VoteDto newVote) {
      return addVotes(newVote, candidateRepository.findById(id)
        .orElseThrow(() -> new RuntimeException("No candidate found!"))
      );
   }
 
+  @Override
   public List<CandidateDto> getAllCandidates() {
     return candidateRepository.findAll()
-        .stream()
-        .map(candidate -> {
-          CandidateDto candidateDto = CandidateMapper.INSTANCE.candidateToResponse(candidate);
-          candidateDto.setTotalVotes(0);
+      .stream()
+      .map(candidate -> {
+        CandidateDto candidateDto = CandidateMapper.INSTANCE.candidateToResponse(candidate);
+        candidateDto.setTotalVotes(0);
 
-          candidateDto.setVotes(voteRepository
-            .findByCandidateId(candidate.getCandidateId())
-            .map(voteList -> voteList
-              .stream()
-              .map(vote -> {
-                candidateDto.setTotalVotes(candidateDto.getTotalVotes() + vote.getVotesAmount());
+        candidateDto.setVotes(voteRepository
+          .findByCandidateId(candidate.getCandidateId())
+          .map(voteList -> voteList
+            .stream()
+            .map(vote -> {
+              candidateDto.setTotalVotes(candidateDto.getTotalVotes() + vote.getVotesAmount());
 
-                return VoteMapper.INSTANCE.voteToVoteDto(vote);
-              })
-              .collect(Collectors.toList()))
-            .orElse(Collections.emptyList()));
+              return VoteMapper.INSTANCE.voteToVoteDto(vote);
+            })
+            .collect(Collectors.toList()))
+          .orElse(Collections.emptyList()));
 
-          return candidateDto;
-        })
-        .collect(Collectors.toList());
+        return candidateDto;
+      })
+      .collect(Collectors.toList());
   }
 
   private VotesAddedResponse addVotes(VoteDto newVoteDto, Candidate candidate) {

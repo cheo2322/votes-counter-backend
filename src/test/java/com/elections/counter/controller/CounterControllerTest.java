@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateResponse;
-import com.elections.counter.service.CounterService;
+import com.elections.counter.service.CandidateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class CounterControllerTest {
   JacksonTester<CandidateResponse> candidateResponse;
   private MockMvc mvc;
   @Mock
-  private CounterService counterService;
+  private CandidateService candidateService;
   @InjectMocks
   private CounterController counterController;
 
@@ -44,7 +44,7 @@ class CounterControllerTest {
   @SneakyThrows
   @Test
   void createCandidate() {
-    given(counterService.createCandidate(any(CandidateRequest.class)))
+    given(candidateService.createCandidate(any(CandidateRequest.class)))
         .willReturn(CandidateResponse.builder().name("Bob").build());
 
     MockHttpServletResponse response = mvc.perform(
