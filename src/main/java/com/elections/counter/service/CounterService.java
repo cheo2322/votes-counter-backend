@@ -52,31 +52,13 @@ public class CounterService {
         vote.setVotesAmount(vote.getVotesAmount() + newVote.getVotesAmount());
         voteRepository.save(vote);
 
-        return VotesAddedResponse
-          .builder()
-          .votesAdded(newVoteDto.getVotesAmount())
-          .totalVotesOnParish(0)
-          .totalVotesOnDesk(vote.getVotesAmount())
-          .totalVotes(0)
-          .parish(newVoteDto.getParish())
-          .precinct(newVoteDto.getPrecinct())
-          .desk(newVoteDto.getDesk())
-          .build();
+        return VoteMapper.INSTANCE.voteToVotesAddedResponse(vote, newVote.getVotesAmount());
       })
       .orElseGet(() -> {
         newVote.setCandidateId(candidate.getCandidateId());
         voteRepository.save(newVote);
 
-        return VotesAddedResponse
-          .builder()
-          .votesAdded(newVoteDto.getVotesAmount())
-          .totalVotesOnParish(0)
-          .totalVotesOnDesk(newVote.getVotesAmount())
-          .totalVotes(0)
-          .parish(newVoteDto.getParish())
-          .precinct(newVoteDto.getPrecinct())
-          .desk(newVoteDto.getDesk())
-          .build();
+        return VoteMapper.INSTANCE.voteToVotesAddedResponse(newVote, newVote.getVotesAmount());
       });
   }
 
