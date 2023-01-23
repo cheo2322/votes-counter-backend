@@ -3,11 +3,12 @@ package com.elections.counter.controller;
 import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
-import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
+import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VotesByPrecinctResponse;
 import com.elections.counter.service.CounterService;
+import com.elections.counter.service.VoteService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class CounterController {
 
   @Autowired
   CounterService counterService;
+
+  @Autowired
+  VoteService voteService;
 
   @PostMapping(path = "/candidate")
   public CandidateResponse createCandidate(@RequestBody CandidateRequest candidateRequest) {
@@ -57,13 +61,13 @@ public class CounterController {
   public VotesByGenreResponse getVotesByGenre(@PathVariable String id) {
     log.info("GET getVotesByGenre [id={}]", id);
 
-    return counterService.getVotesByGenre(id);
+    return voteService.getVotesByGenre(id);
   }
 
   @GetMapping("/candidate/{id}/votes/precinct")
   public List<VotesByPrecinctResponse> getVotesByPrecinct(@PathVariable String id) {
     log.info("GET getVotesByPrecinct [id={}]", id);
 
-    return counterService.getVotesByPrecinct(id);
+    return voteService.getVotesByPrecinct(id);
   }
 }
