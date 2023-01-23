@@ -3,10 +3,13 @@ package com.elections.counter.service.impl;
 import com.elections.counter.document.DeskType;
 import com.elections.counter.document.Parish;
 import com.elections.counter.document.Precinct;
+import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VotesByParametersResponse;
+import com.elections.counter.mapper.VoteMapper;
 import com.elections.counter.repository.VoteRepository;
 import com.elections.counter.service.VoteService;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,5 +95,14 @@ public class VoteServiceImpl implements VoteService {
           .value(parish.getValue())
           .build()
       ).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<VoteDto> getVotesByCandidateId(String id) {
+    return voteRepository.findByCandidateId(id)
+      .map(votes -> votes.stream()
+        .map(VoteMapper.INSTANCE::voteToVoteDto)
+        .collect(Collectors.toList()))
+      .orElseGet(Collections::emptyList);
   }
 }
