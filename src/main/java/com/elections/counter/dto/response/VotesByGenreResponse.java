@@ -7,7 +7,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class CandidateResponseByGenre {
+public class VotesByGenreResponse {
 
   private long male;
   private long female;

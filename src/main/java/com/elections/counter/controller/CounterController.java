@@ -3,9 +3,10 @@ package com.elections.counter.controller;
 import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
-import com.elections.counter.dto.response.CandidateResponseByGenre;
+import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
+import com.elections.counter.dto.response.VotesByPrecinctResponse;
 import com.elections.counter.service.CounterService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +54,16 @@ public class CounterController {
   }
 
   @GetMapping(path = "/candidate/{id}/votes/genre")
-  public CandidateResponseByGenre getVotesByGenre(@PathVariable String id) {
+  public VotesByGenreResponse getVotesByGenre(@PathVariable String id) {
     log.info("GET getVotesByGenre [id={}]", id);
 
-    return counterService.getCandidateVotesByGenre(id);
+    return counterService.getVotesByGenre(id);
+  }
+
+  @GetMapping("/candidate/{id}/votes/precinct")
+  public List<VotesByPrecinctResponse> getVotesByPrecinct(@PathVariable String id) {
+    log.info("GET getVotesByPrecinct [id={}]", id);
+
+    return counterService.getVotesByPrecinct(id);
   }
 }
