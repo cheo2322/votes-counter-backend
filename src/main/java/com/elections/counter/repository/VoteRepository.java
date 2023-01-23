@@ -1,5 +1,6 @@
 package com.elections.counter.repository;
 
+import com.elections.counter.document.DeskType;
 import com.elections.counter.document.Parish;
 import com.elections.counter.document.Precinct;
 import com.elections.counter.document.Vote;
@@ -13,6 +14,6 @@ public interface VoteRepository extends MongoRepository<Vote, String> {
 
     Optional<List<Vote>> findByCandidateId(String candidateId);
 
-    Optional<Vote> findByCandidateIdAndParishAndPrecinctAndDesk(
-      String candidateId, Parish parish, Precinct precinct, int desk);
+    Optional<Vote> findByCandidateIdAndParishAndPrecinctAndDeskAndDeskType(
+      String candidateId, Parish parish, Precinct precinct, int desk, DeskType deskType);
 }

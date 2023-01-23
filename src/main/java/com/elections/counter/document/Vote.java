@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 @Getter
 @Setter
-@CompoundIndex(def = "{'candidateId': 1, 'parish': 1, 'precinct': 1, 'desk': 1}, unique = true")
+@CompoundIndex(def =
+  "{'candidateId': 1, 'parish': 1, 'precinct': 1, 'desk': 1, 'deskType': 1}, unique = true")
 public class Vote {
 
   @Id
@@ -19,4 +20,5 @@ public class Vote {
   private Parish parish;
   private Precinct precinct;
   private int desk;
+  private DeskType deskType;
 }

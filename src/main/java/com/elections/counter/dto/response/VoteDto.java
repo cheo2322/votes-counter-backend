@@ -1,5 +1,6 @@
 package com.elections.counter.dto.response;
 
+import com.elections.counter.document.DeskType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,4 +16,5 @@ public class VoteDto {
   private String parish;
   private String precinct;
   private int desk;
+  private DeskType deskType;
 }

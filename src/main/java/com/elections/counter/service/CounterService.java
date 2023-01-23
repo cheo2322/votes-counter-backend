@@ -46,8 +46,9 @@ public class CounterService {
   private VotesAddedResponse addVotes(VoteDto newVoteDto, Candidate candidate) {
     Vote newVote = VoteMapper.INSTANCE.dtoToVote(newVoteDto);
 
-    return voteRepository.findByCandidateIdAndParishAndPrecinctAndDesk(candidate.getCandidateId(),
-      newVote.getParish(), newVote.getPrecinct(), newVote.getDesk())
+    return voteRepository
+      .findByCandidateIdAndParishAndPrecinctAndDeskAndDeskType(candidate.getCandidateId(),
+        newVote.getParish(), newVote.getPrecinct(), newVote.getDesk(), newVote.getDeskType())
       .map(vote -> {
         vote.setVotesAmount(vote.getVotesAmount() + newVote.getVotesAmount());
         voteRepository.save(vote);
