@@ -1,10 +1,12 @@
 package com.elections.counter.service;
 
 import com.elections.counter.document.Candidate;
+import com.elections.counter.document.DeskType;
 import com.elections.counter.document.Vote;
 import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
+import com.elections.counter.dto.response.CandidateResponseByGenre;
 import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
 import com.elections.counter.mapper.CandidateMapper;
@@ -43,26 +45,6 @@ public class CounterService {
      );
   }
 
-  private VotesAddedResponse addVotes(VoteDto newVoteDto, Candidate candidate) {
-    Vote newVote = VoteMapper.INSTANCE.dtoToVote(newVoteDto);
-
-    return voteRepository
-      .findByCandidateIdAndParishAndPrecinctAndDeskAndDeskType(candidate.getCandidateId(),
-        newVote.getParish(), newVote.getPrecinct(), newVote.getDesk(), newVote.getDeskType())
-      .map(vote -> {
-        vote.setVotesAmount(vote.getVotesAmount() + newVote.getVotesAmount());
-        voteRepository.save(vote);
-
-        return VoteMapper.INSTANCE.voteToVotesAddedResponse(vote, newVote.getVotesAmount());
-      })
-      .orElseGet(() -> {
-        newVote.setCandidateId(candidate.getCandidateId());
-        voteRepository.save(newVote);
-
-        return VoteMapper.INSTANCE.voteToVotesAddedResponse(newVote, newVote.getVotesAmount());
-      });
-  }
-
   public List<CandidateDto> getAllCandidates() {
     return candidateRepository.findAll()
         .stream()
@@ -85,6 +67,49 @@ public class CounterService {
           return candidateDto;
         })
         .collect(Collectors.toList());
+  }
+
+  public CandidateResponseByGenre getCandidateVotesByGenre(String id) {
+    return voteRepository.findByCandidateId(id)
+      .map(votes -> {
+        CandidateResponseByGenre response = CandidateResponseByGenre.builder()
+          .female(0)
+          .male(0L)
+          .build();
+
+        votes.forEach(vote -> {
+          if (vote.getDeskType().equals(DeskType.FEMENINO)) {
+            response.setFemale(response.getFemale() + vote.getVotesAmount());
+          } else if (vote.getDeskType().equals(DeskType.MASCULINO)){
+            response.setMale(response.getMale() + vote.getVotesAmount());
+          } else {
+            throw new RuntimeException("Something went wrong!");
+          }
+        });
+
+        return response;
+        })
+      .orElseThrow(() -> new RuntimeException("Votes not found!"));
+  }
+
+  private VotesAddedResponse addVotes(VoteDto newVoteDto, Candidate candidate) {
+    Vote newVote = VoteMapper.INSTANCE.dtoToVote(newVoteDto);
+
+    return voteRepository
+      .findByCandidateIdAndParishAndPrecinctAndDeskAndDeskType(candidate.getCandidateId(),
+        newVote.getParish(), newVote.getPrecinct(), newVote.getDesk(), newVote.getDeskType())
+      .map(vote -> {
+        vote.setVotesAmount(vote.getVotesAmount() + newVote.getVotesAmount());
+        voteRepository.save(vote);
+
+        return VoteMapper.INSTANCE.voteToVotesAddedResponse(vote, newVote.getVotesAmount());
+      })
+      .orElseGet(() -> {
+        newVote.setCandidateId(candidate.getCandidateId());
+        voteRepository.save(newVote);
+
+        return VoteMapper.INSTANCE.voteToVotesAddedResponse(newVote, newVote.getVotesAmount());
+      });
   }
 
   private void setCandidateCode(Candidate candidate) {
