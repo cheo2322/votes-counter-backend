@@ -7,8 +7,8 @@ import lombok.Setter;
 @Builder
 @Setter
 @Getter
-public class VotesByPrecinctResponse {
+public class VotesByParametersResponse {
 
-  private String precinct;
-  private long votes;
+  private String name;
+  private long value;
 }

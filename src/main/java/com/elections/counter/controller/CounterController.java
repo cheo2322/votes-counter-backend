@@ -6,7 +6,7 @@ import com.elections.counter.dto.response.CandidateResponse;
 import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
 import com.elections.counter.dto.response.VotesByGenreResponse;
-import com.elections.counter.dto.response.VotesByPrecinctResponse;
+import com.elections.counter.dto.response.VotesByParametersResponse;
 import com.elections.counter.service.CandidateService;
 import com.elections.counter.service.VoteService;
 import java.util.List;
@@ -68,9 +68,16 @@ public class CounterController {
   }
 
   @GetMapping("/candidate/{id}/votes/precinct")
-  public List<VotesByPrecinctResponse> getVotesByPrecinct(@PathVariable String id) {
+  public List<VotesByParametersResponse> getVotesByPrecinct(@PathVariable String id) {
     log.info("GET getVotesByPrecinct [id={}]", id);
 
     return voteService.getVotesByPrecinct(id);
+  }
+
+  @GetMapping("/candidate/{id}/votes/parish")
+  public List<VotesByParametersResponse> getVotesByParish(@PathVariable String id) {
+    log.info("GET getVotesByPrecinct [id={}]", id);
+
+    return voteService.getVotesByParish(id);
   }
 }
