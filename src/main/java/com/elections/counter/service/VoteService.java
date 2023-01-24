@@ -13,5 +13,5 @@ public interface VoteService {
 
   List<VotesByParametersResponse> getVotesByParish(String id);
 
-  List<VoteDto> getVotesByCandidateId(String id);
+  List<VoteDto> getVotesByDesk(String id);
 }

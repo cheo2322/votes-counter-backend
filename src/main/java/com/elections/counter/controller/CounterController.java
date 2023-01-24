@@ -55,11 +55,11 @@ public class CounterController {
     return candidateService.getAllCandidates();
   }
 
-  @GetMapping("/candidate/{id}/votes")
-  public List<VoteDto> getCandidateVotes(@PathVariable String id) {
-    log.info("GET getCandidateVotes [id={}]", id);
+  @GetMapping("/candidate/{id}/votes/desk")
+  public List<VoteDto> getVotesByDesk(@PathVariable String id) {
+    log.info("GET getVotesByDesk [id={}]", id);
 
-    return voteService.getVotesByCandidateId(id);
+    return voteService.getVotesByDesk(id);
   }
 
   @GetMapping(path = "/candidate/{id}/votes/genre")

@@ -98,7 +98,7 @@ public class VoteServiceImpl implements VoteService {
   }
 
   @Override
-  public List<VoteDto> getVotesByCandidateId(String id) {
+  public List<VoteDto> getVotesByDesk(String id) {
     return voteRepository.findByCandidateId(id)
       .map(votes -> votes.stream()
         .map(VoteMapper.INSTANCE::voteToVoteDto)
