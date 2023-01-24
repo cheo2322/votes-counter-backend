@@ -21,4 +21,5 @@ public class Candidate {
   private String lastName;
   private int list;
   private Position position;
+  private long totalVotes;
 }

@@ -49,25 +49,15 @@ public class CandidateServiceImpl implements CandidateService {
   public List<CandidateDto> getAllCandidates() {
     return candidateRepository.findAll()
       .stream()
-      .map(candidate -> {
-        CandidateDto candidateDto = CandidateMapper.INSTANCE.candidateToResponse(candidate);
-        candidateDto.setTotalVotes(voteRepository
-          .findByCandidateId(candidate.getCandidateId())
-          .map(voteList -> voteList
-            .stream()
-            .mapToLong(Vote::getVotesAmount)
-            .sum())
-          .orElse(0L));
-
-        return candidateDto;
-      })
+      .map(CandidateMapper.INSTANCE::candidateToResponse)
       .collect(Collectors.toList());
   }
 
   private VotesAddedResponse addVotes(VoteDto newVoteDto, Candidate candidate) {
     Vote newVote = VoteMapper.INSTANCE.dtoToVote(newVoteDto);
+    candidate.setTotalVotes(candidate.getTotalVotes() + newVote.getVotesAmount());
 
-    return voteRepository
+    VotesAddedResponse response = voteRepository
       .findByCandidateIdAndParishAndPrecinctAndDeskAndDeskType(candidate.getCandidateId(),
         newVote.getParish(), newVote.getPrecinct(), newVote.getDesk(), newVote.getDeskType())
       .map(vote -> {
@@ -82,6 +72,10 @@ public class CandidateServiceImpl implements CandidateService {
 
         return VoteMapper.INSTANCE.voteToVotesAddedResponse(newVote, newVote.getVotesAmount());
       });
+
+    candidateRepository.save(candidate);
+
+    return response;
   }
 
   private void setCandidateCode(Candidate candidate) {
