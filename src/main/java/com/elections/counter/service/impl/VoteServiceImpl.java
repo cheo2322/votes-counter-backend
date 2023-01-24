@@ -91,7 +91,7 @@ public class VoteServiceImpl implements VoteService {
       .entrySet().stream()
       .map(parish ->
         VotesByParametersResponse.builder()
-          .name(parish.getKey().name())
+          .name(parish.getKey().getLabel())
           .value(parish.getValue())
           .build()
       ).collect(Collectors.toList());
