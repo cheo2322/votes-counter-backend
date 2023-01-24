@@ -1,9 +1,10 @@
 package com.elections.counter.service;
 
-import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VotesByParametersResponse;
+import com.elections.counter.dto.response.vote.ParishVoteDto;
 import java.util.List;
+import java.util.Set;
 
 public interface VoteService {
 
@@ -13,5 +14,5 @@ public interface VoteService {
 
   List<VotesByParametersResponse> getVotesByParish(String id);
 
-  List<VoteDto> getVotesByDesk(String id);
+  Set<ParishVoteDto> getVotesByDesk(String id);
 }

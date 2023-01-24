@@ -7,9 +7,11 @@ import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
 import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VotesByParametersResponse;
+import com.elections.counter.dto.response.vote.ParishVoteDto;
 import com.elections.counter.service.CandidateService;
 import com.elections.counter.service.VoteService;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,7 +58,7 @@ public class CounterController {
   }
 
   @GetMapping("/candidate/{id}/votes/desk")
-  public List<VoteDto> getVotesByDesk(@PathVariable String id) {
+  public Set<ParishVoteDto> getVotesByDesk(@PathVariable String id) {
     log.info("GET getVotesByDesk [id={}]", id);
 
     return voteService.getVotesByDesk(id);

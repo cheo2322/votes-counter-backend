@@ -3,16 +3,20 @@ package com.elections.counter.service.impl;
 import com.elections.counter.document.DeskType;
 import com.elections.counter.document.Parish;
 import com.elections.counter.document.Precinct;
-import com.elections.counter.dto.response.VoteDto;
+import com.elections.counter.document.Vote;
 import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VotesByParametersResponse;
-import com.elections.counter.mapper.VoteMapper;
+import com.elections.counter.dto.response.vote.DeskVoteDto;
+import com.elections.counter.dto.response.vote.PrecinctVoteDto;
+import com.elections.counter.dto.response.vote.ParishVoteDto;
 import com.elections.counter.repository.VoteRepository;
 import com.elections.counter.service.VoteService;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,11 +102,96 @@ public class VoteServiceImpl implements VoteService {
   }
 
   @Override
-  public List<VoteDto> getVotesByDesk(String id) {
+  public Set<ParishVoteDto> getVotesByDesk(String id) {
     return voteRepository.findByCandidateId(id)
-      .map(votes -> votes.stream()
-        .map(VoteMapper.INSTANCE::voteToVoteDto)
-        .collect(Collectors.toList()))
-      .orElseGet(Collections::emptyList);
+      .map(this::getResponseFromVotes)
+      .orElseGet(Collections::emptySet);
+  }
+
+  private Set<ParishVoteDto> getResponseFromVotes(List<Vote> votes) {
+    Set<ParishVoteDto> response = new HashSet<>();
+
+    for (Vote vote : votes) {
+      ParishVoteDto parishVoteDto = getNewOrExistentParishVote(response, vote);
+
+      Set<PrecinctVoteDto> votesByPrecinct = parishVoteDto.getVotesByPrecinct();
+      if (!votesByPrecinct.isEmpty()) {
+        PrecinctVoteDto precinctVoteDto = getNewOrExistentPrecinctVote(votesByPrecinct, vote);
+        Set<DeskVoteDto> deskVoteDtos = new HashSet<>(precinctVoteDto.getVotesByDesk());
+
+        DeskVoteDto deskVoteDto = getNewOrExistentDeskVote(deskVoteDtos, vote);
+        deskVoteDto.setAmount(deskVoteDto.getAmount() + vote.getVotesAmount());
+
+        deskVoteDtos.add(deskVoteDto);
+        precinctVoteDto.setVotesByDesk(deskVoteDtos);
+
+        Set<PrecinctVoteDto> newPrecinctDtos = new HashSet<>(votesByPrecinct);
+        newPrecinctDtos.add(precinctVoteDto);
+
+        parishVoteDto.setVotesByPrecinct(newPrecinctDtos);
+
+      } else {
+        response.add(newVoteResponse(vote));
+      }
+    }
+
+    return response;
+  }
+
+  private ParishVoteDto newVoteResponse(Vote vote) {
+    return ParishVoteDto.builder()
+      .parish(vote.getParish().getLabel())
+      .votesByPrecinct(Collections.singleton(
+        PrecinctVoteDto.builder()
+          .precinct(vote.getPrecinct().getLabel())
+          .votesByDesk(Collections.singleton(
+            DeskVoteDto.builder()
+              .desk(vote.getDesk())
+              .deskType(vote.getDeskType())
+              .amount(vote.getVotesAmount())
+              .build())
+          ).build())
+      ).build();
+  }
+
+  private ParishVoteDto getNewOrExistentParishVote(Set<ParishVoteDto> parishVotes, Vote vote) {
+    return parishVotes
+      .stream()
+      .filter(parishVoteDto -> parishVoteDto.getParish().equals(vote.getParish().getLabel()))
+      .findFirst()
+      .orElse(ParishVoteDto.builder()
+        .parish(vote.getParish().getLabel())
+        .votesByPrecinct(Collections.emptySet())
+        .build()
+      );
+  }
+
+  private PrecinctVoteDto getNewOrExistentPrecinctVote(Set<PrecinctVoteDto> precinctVotes,
+                                                       Vote vote) {
+
+    return precinctVotes
+      .stream()
+      .filter(precinctVoteDto ->
+        precinctVoteDto.getPrecinct().equals(vote.getPrecinct().getLabel()))
+      .findFirst()
+      .orElse(PrecinctVoteDto.builder()
+        .precinct(vote.getPrecinct().getLabel())
+        .votesByDesk(Collections.emptySet())
+        .build()
+      );
+  }
+
+  private DeskVoteDto getNewOrExistentDeskVote(Set<DeskVoteDto> deskVotes, Vote vote) {
+    return deskVotes
+      .stream()
+      .filter(deskVoteDto -> deskVoteDto.getDesk() == vote.getDesk()
+        && deskVoteDto.getDeskType().equals(vote.getDeskType()))
+      .findFirst()
+      .orElse(DeskVoteDto.builder()
+        .desk(vote.getDesk())
+        .deskType(vote.getDeskType())
+        .amount(0)
+        .build()
+      );
   }
 }
