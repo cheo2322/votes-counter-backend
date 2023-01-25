@@ -12,8 +12,8 @@ public enum Precinct {
     UNIDAD_EDUCATIVA_PABLO_ARENAS
             ("Unidad Edcucativa Cahuasqui Bloque Pablo Arenas / Escuela 5 de Junio"),
     UNIDAD_EDUCATIVA_ROCAFUERTE("Unidad Educativa Vicente Rocafuerte"),
-    ESCUELA_HERNAN_CORTEZ("Antigua Escuela Hernan Cortez"),
-    UNIDAD_EDUCATIVA_URCUQUI("UNIDAD EDUCATIVA URCUQUI");
+    ESCUELA_HERNAN_CORTEZ("Antigua Escuela Hernán Cortez"),
+    UNIDAD_EDUCATIVA_URCUQUI("Unidad Educativa Urcuquí");
 
     @Getter
     private final String label;

@@ -7,7 +7,7 @@ public enum Parish {
     PABLO_ARENAS("Pablo Arenas"),
     CAHUASQUI("Cahuasquí"),
     LA_MERCED_DE_BUENOS_AIRES("La Merced de Buenos Aires"),
-    SAN_BLAS("San Blass"),
+    SAN_BLAS("San Blas"),
     TUMBABIRO("Tumbabiro");
 
     @Getter
