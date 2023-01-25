@@ -19,7 +19,6 @@ public class Candidate {
   private String code;
   private String name;
   private String lastName;
-  private int list;
   private Position position;
   private long totalVotes;
 }

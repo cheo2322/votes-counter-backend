@@ -10,7 +10,6 @@ public class CandidateDto {
   private String id;
   private String name;
   private String lastName;
-  private int list;
   private long totalVotes;
   private String position;
 }

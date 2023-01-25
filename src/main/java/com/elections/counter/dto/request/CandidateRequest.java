@@ -18,6 +18,5 @@ public class CandidateRequest {
 
   private String name;
   private String lastName;
-  private int list;
   private Position position;
 }

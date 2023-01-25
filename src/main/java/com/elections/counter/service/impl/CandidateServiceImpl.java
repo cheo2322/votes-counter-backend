@@ -79,7 +79,7 @@ public class CandidateServiceImpl implements CandidateService {
   }
 
   private void setCandidateCode(Candidate candidate) {
-    candidate.setCode(String.format("%s_%s_%s_%d", candidate.getLastName(), candidate.getName(),
-        candidate.getPosition().name(), candidate.getList()));
+    candidate.setCode(String.format("%s_%s_%s", candidate.getLastName(), candidate.getName(),
+        candidate.getPosition().name()));
   }
 }
