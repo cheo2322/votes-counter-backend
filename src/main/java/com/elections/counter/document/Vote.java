@@ -1,5 +1,8 @@
 package com.elections.counter.document;
 
+import com.elections.counter.document.enums.DeskType;
+import com.elections.counter.document.enums.Parish;
+import com.elections.counter.document.enums.Precinct;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;

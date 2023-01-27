@@ -1,8 +1,8 @@
 package com.elections.counter.repository;
 
-import com.elections.counter.document.DeskType;
-import com.elections.counter.document.Parish;
-import com.elections.counter.document.Precinct;
+import com.elections.counter.document.enums.DeskType;
+import com.elections.counter.document.enums.Parish;
+import com.elections.counter.document.enums.Precinct;
 import com.elections.counter.document.Vote;
 import java.util.List;
 import java.util.Optional;

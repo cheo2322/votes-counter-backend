@@ -1,5 +1,6 @@
 package com.elections.counter.document;
 
+import com.elections.counter.document.enums.Position;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

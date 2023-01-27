@@ -1,6 +1,6 @@
 package com.elections.counter.dto.request;
 
-import com.elections.counter.document.Position;
+import com.elections.counter.document.enums.Position;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

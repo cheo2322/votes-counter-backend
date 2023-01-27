@@ -1,8 +1,8 @@
 package com.elections.counter.service.impl;
 
-import com.elections.counter.document.DeskType;
-import com.elections.counter.document.Parish;
-import com.elections.counter.document.Precinct;
+import com.elections.counter.document.enums.DeskType;
+import com.elections.counter.document.enums.Parish;
+import com.elections.counter.document.enums.Precinct;
 import com.elections.counter.document.Vote;
 import com.elections.counter.dto.response.VotesByGenreResponse;
 import com.elections.counter.dto.response.VotesByParametersResponse;

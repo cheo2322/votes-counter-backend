@@ -1,6 +1,6 @@
 package com.elections.counter.dto.response;
 
-import com.elections.counter.document.DeskType;
+import com.elections.counter.document.enums.DeskType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

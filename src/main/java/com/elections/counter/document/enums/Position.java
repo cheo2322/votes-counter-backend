@@ -1,4 +1,4 @@
-package com.elections.counter.document;
+package com.elections.counter.document.enums;
 
 import lombok.Getter;
 
