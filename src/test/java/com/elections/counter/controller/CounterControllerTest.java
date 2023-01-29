@@ -2,11 +2,17 @@ package com.elections.counter.controller;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import com.elections.counter.document.enums.DeskType;
+import com.elections.counter.document.enums.Position;
 import com.elections.counter.dto.request.CandidateRequest;
 import com.elections.counter.dto.response.CandidateResponse;
+import com.elections.counter.dto.response.VoteDto;
+import com.elections.counter.dto.response.VotesAddedResponse;
 import com.elections.counter.service.CandidateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -28,6 +34,8 @@ class CounterControllerTest {
 
   JacksonTester<CandidateRequest> candidateRequest;
   JacksonTester<CandidateResponse> candidateResponse;
+  JacksonTester<VoteDto> voteDto;
+  JacksonTester<VotesAddedResponse> votesAddedResponse;
   private MockMvc mvc;
   @Mock
   private CandidateService candidateService;
@@ -43,21 +51,61 @@ class CounterControllerTest {
   }
   @SneakyThrows
   @Test
-  void createCandidate() {
-    given(candidateService.createCandidate(any(CandidateRequest.class)))
-        .willReturn(CandidateResponse.builder().name("Bob").build());
+  void shouldCreateAndPostANewCandidate() {
+    CandidateResponse response = CandidateResponse.builder().name("Bob").build();
 
-    MockHttpServletResponse response = mvc.perform(
+    given(candidateService.createCandidate(any(CandidateRequest.class)))
+        .willReturn(response);
+
+    MockHttpServletResponse httpResponse = mvc.perform(
         post("/counter_api/v1/candidate")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(candidateRequest.write(CandidateRequest.builder()
-                .name("Bob")
-                .build()
+            .content(candidateRequest.write(
+                CandidateRequest.builder()
+                    .name("Bob")
+                    .lastName("Singer")
+                    .position(Position.ALCALDE)
+                    .build()
                 ).getJson())
             ).andReturn().getResponse();
 
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-    assertThat(response.getContentAsString()).isEqualTo(
-        candidateResponse.write(CandidateResponse.builder().name("Bob").build()).getJson());
+    assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+    assertThat(httpResponse.getContentAsString())
+        .isEqualTo(candidateResponse.write(response).getJson());
+  }
+
+  @SneakyThrows
+  @Test
+  void shouldAddVotesToACandidate() {
+    VotesAddedResponse response1 = VotesAddedResponse.builder()
+        .votesAdded(10L)
+        .totalVotesOnDesk(10L)
+        .parish("URCUQUI")
+        .precinct("UNIDAD_EDUCATIVA_YACHAY")
+        .desk(1)
+        .deskType(DeskType.FEMENINO)
+        .build();
+
+    given(candidateService.addVotesToCandidate(anyString(), any(VoteDto.class)))
+        .willReturn(response1);
+
+    MockHttpServletResponse httpResponse = mvc.perform(
+        patch("/counter_api/v1/candidate/0/votes/add")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(voteDto.write(
+                VoteDto.builder()
+                    .votesAmount(10L)
+                    .parish("URCUQUI")
+                    .precinct("UNIDAD_EDUCATIVA_YACHAY")
+                    .desk(1)
+                    .deskType(DeskType.FEMENINO)
+                    .build()
+                ).getJson())
+            ).andReturn()
+        .getResponse();
+
+    assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(httpResponse.getContentAsString())
+        .isEqualTo(votesAddedResponse.write(response1).getJson());
   }
 }
