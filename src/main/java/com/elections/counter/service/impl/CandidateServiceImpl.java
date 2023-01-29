@@ -7,6 +7,7 @@ import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
 import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
+import com.elections.counter.handler.exception.CandidateAlreadyExistsException;
 import com.elections.counter.mapper.CandidateMapper;
 import com.elections.counter.mapper.VoteMapper;
 import com.elections.counter.repository.CandidateRepository;
@@ -15,6 +16,7 @@ import com.elections.counter.service.CandidateService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,7 +33,11 @@ public class CandidateServiceImpl implements CandidateService {
     Candidate candidate = CandidateMapper.INSTANCE.requestToCandidate(candidateRequest);
     setCandidateCode(candidate);
 
-    candidateRepository.save(candidate);
+    try {
+      candidateRepository.save(candidate);
+    } catch (DuplicateKeyException e) {
+      throw new CandidateAlreadyExistsException("Candidate already exists!");
+    }
 
     return CandidateResponse.builder()
       .name(String.format("%s %s", candidateRequest.getName(), candidate.getLastName()))
