@@ -8,6 +8,7 @@ import com.elections.counter.dto.response.CandidateResponse;
 import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
 import com.elections.counter.handler.exception.CandidateAlreadyExistsException;
+import com.elections.counter.handler.exception.CandidateNotFoundException;
 import com.elections.counter.mapper.CandidateMapper;
 import com.elections.counter.mapper.VoteMapper;
 import com.elections.counter.repository.CandidateRepository;
@@ -47,7 +48,7 @@ public class CandidateServiceImpl implements CandidateService {
   @Override
   public VotesAddedResponse addVotesToCandidate(String id, VoteDto newVote) {
      return addVotes(newVote, candidateRepository.findById(id)
-       .orElseThrow(() -> new RuntimeException("No candidate found!"))
+       .orElseThrow(() -> new CandidateNotFoundException("Candidate not found!"))
      );
   }
 
