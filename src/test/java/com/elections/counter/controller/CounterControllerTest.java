@@ -4,17 +4,26 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.elections.counter.document.enums.DeskType;
 import com.elections.counter.document.enums.Position;
 import com.elections.counter.dto.request.CandidateRequest;
+import com.elections.counter.dto.response.CandidateDto;
 import com.elections.counter.dto.response.CandidateResponse;
 import com.elections.counter.dto.response.VoteDto;
 import com.elections.counter.dto.response.VotesAddedResponse;
+import com.elections.counter.dto.response.vote.DeskVoteDto;
+import com.elections.counter.dto.response.vote.ParishVoteDto;
+import com.elections.counter.dto.response.vote.PrecinctVoteDto;
 import com.elections.counter.service.CandidateService;
+import com.elections.counter.service.VoteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,9 +45,16 @@ class CounterControllerTest {
   JacksonTester<CandidateResponse> candidateResponse;
   JacksonTester<VoteDto> voteDto;
   JacksonTester<VotesAddedResponse> votesAddedResponse;
+  JacksonTester<List<CandidateDto>> candidateDtos;
+  JacksonTester<Set<ParishVoteDto>> parishVoteDtosResponse;
   private MockMvc mvc;
+
   @Mock
   private CandidateService candidateService;
+
+  @Mock
+  private VoteService voteService;
+
   @InjectMocks
   private CounterController counterController;
 
@@ -77,7 +93,7 @@ class CounterControllerTest {
   @SneakyThrows
   @Test
   void shouldAddVotesToACandidate() {
-    VotesAddedResponse response1 = VotesAddedResponse.builder()
+    VotesAddedResponse response = VotesAddedResponse.builder()
         .votesAdded(10L)
         .totalVotesOnDesk(10L)
         .parish("URCUQUI")
@@ -87,7 +103,7 @@ class CounterControllerTest {
         .build();
 
     given(candidateService.addVotesToCandidate(anyString(), any(VoteDto.class)))
-        .willReturn(response1);
+        .willReturn(response);
 
     MockHttpServletResponse httpResponse = mvc.perform(
         patch("/counter_api/v1/candidate/0/votes/add")
@@ -106,6 +122,65 @@ class CounterControllerTest {
 
     assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(httpResponse.getContentAsString())
-        .isEqualTo(votesAddedResponse.write(response1).getJson());
+        .isEqualTo(votesAddedResponse.write(response).getJson());
+  }
+
+  @SneakyThrows
+  @Test
+  void shouldGetAllCandidates() {
+    CandidateDto candidateDto = CandidateDto.builder()
+        .id("id")
+        .name("Name")
+        .lastName("LastName")
+        .totalVotes(10L)
+        .position("PREFECTO")
+        .build();
+
+    List<CandidateDto> response = Collections.singletonList(candidateDto);
+
+    given(candidateService.getAllCandidates())
+        .willReturn(response);
+
+    MockHttpServletResponse httpResponse = mvc.perform(
+        get("/counter_api/v1/candidate"))
+        .andReturn()
+        .getResponse();
+
+    assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(httpResponse.getContentAsString())
+        .isEqualTo(candidateDtos.write(response).getJson());
+  }
+
+  @SneakyThrows
+  @Test
+  void shouldGetVotesByDesk() {
+    ParishVoteDto parishVoteDto = ParishVoteDto.builder()
+        .parish("PABLO_ARENAS")
+        .votesByPrecinct(Collections.singleton(
+            PrecinctVoteDto.builder()
+                .precinct("UNIDAD_EDUCATIVA_PABLO_ARENAS")
+                .votesByDesk(Collections.singleton(
+                    DeskVoteDto.builder()
+                        .desk(1)
+                        .deskType(DeskType.MASCULINO)
+                        .amount(10L)
+                        .build()
+                ))
+                .build())
+        ).build();
+
+    Set<ParishVoteDto> response = Collections.singleton(parishVoteDto);
+
+    given(voteService.getVotesByDesk(anyString()))
+        .willReturn(response);
+
+    MockHttpServletResponse httpResponse = mvc.perform(
+        get("/counter_api/v1/candidate/0/votes/desk"))
+        .andReturn()
+        .getResponse();
+
+    assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(httpResponse.getContentAsString())
+        .isEqualTo(parishVoteDtosResponse.write(response).getJson());
   }
 }
